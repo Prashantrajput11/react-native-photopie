@@ -1,7 +1,8 @@
 import {View, Text} from 'react-native';
 import React from 'react';
+import CustomSliderOne from '../components/CustomSliderOne';
 
-const WelcomeScreen = () => {
+const WelcomeScreen = ({navigation}) => {
   // Onboarind screens list
   const onboardingData = [
     {
@@ -31,8 +32,8 @@ const WelcomeScreen = () => {
   ];
 
   return (
-    <View>
-      <Text>WelcomeScreen</Text>
+    <View style={{flex: 1}}>
+      <CustomSliderOne />
     </View>
   );
 };

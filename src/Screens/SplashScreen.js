@@ -3,7 +3,7 @@ import {Image, StatusBar, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect} from 'react';
 
 // Colors
-import {THEME_COLOR1, LIGHT, THEME_COLOR3} from '../utils/Colors';
+import {THEME_COLOR2, THEME_COLOR1, LIGHT, THEME_COLOR3} from '../utils/Colors';
 
 const SplashScreen = ({navigation}) => {
   // useEffect Hook
@@ -16,7 +16,7 @@ const SplashScreen = ({navigation}) => {
   return (
     <View style={styles.container}>
       <StatusBar
-        backgroundColor={THEME_COLOR1}
+        backgroundColor={THEME_COLOR2}
         barStyle={'light-content'}
         // hidden={true}
         translucent={false}
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: THEME_COLOR1,
+    backgroundColor: THEME_COLOR2,
   },
 
   logoContainer: {
