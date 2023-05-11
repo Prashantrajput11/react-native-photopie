@@ -4,14 +4,27 @@ import React, {useEffect} from 'react';
 
 // Colors
 import {THEME_COLOR2, THEME_COLOR1, LIGHT, THEME_COLOR3} from '../utils/Colors';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SplashScreen = ({navigation}) => {
   // useEffect Hook
   useEffect(() => {
     setTimeout(() => {
-      navigation.navigate('WelcomeScreen');
+      // navigation.navigate('WelcomeScreen');
+      isUserNew();
     }, 4000);
   }, []);
+
+  const isUserNew = async () => {
+    const isNewUser = AsyncStorage.getItem('IS_NEW_USER');
+
+    if (isNewUser !== null) {
+      navigation.navigate('LoginScreen');
+    } else {
+      navigation.navigate('WelcomeScreen');
+    }
+    console.log(isNewUser);
+  };
 
   return (
     <View style={styles.container}>

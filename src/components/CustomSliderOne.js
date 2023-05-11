@@ -10,13 +10,20 @@ import React, {useState} from 'react';
 
 import {THEME_COLOR2, LIGHT, DARK} from '../utils/Colors';
 import Cta from './Cta';
+import {useNavigation} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CustomSliderOne = () => {
+  // import useNavigation hook
+  const navigation = useNavigation();
+
   // Get screen's width and height
   const {height, width} = useWindowDimensions();
 
+  // init local states
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  // Onboarding screens data
   let onboardingData = [
     {
       id: 1,
@@ -47,10 +54,19 @@ const CustomSliderOne = () => {
     },
   ];
 
-  const renderDots = () => {
+  // Set new user data to async storage
+  const setUserData = async () => {
+    AsyncStorage.setItem('IS_NEW_USER', true);
+
+    navigation.navigate('LoginScreen');
+  };
+
+  // Render onboarding screen indicators
+  const renderOnboardingIndicators = () => {
     return onboardingData.map((slide, index) => {
       return (
         <View
+          key={slide.id.toString()}
           style={[
             styles.dotIndicator,
             index === currentIndex ? styles.activeDotIndicator : null,
@@ -59,8 +75,7 @@ const CustomSliderOne = () => {
     });
   };
 
-  // Handle scrolling
-
+  // Handle user's scroll
   const handleScroll = event => {
     let scrollPosition = event.nativeEvent.contentOffset.x;
 
@@ -77,64 +92,69 @@ const CustomSliderOne = () => {
         showsHorizontalScrollIndicator={false}>
         {onboardingData.map((slide, index) => {
           return (
-            <>
-              <View
+            <View
+              key={slide.id.toString()}
+              style={{
+                // backgroundColor: 'orange',
+                height: height,
+                width: width,
+                marginTop: 70,
+                // justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <Text style={styles.onBoardingheaderTitle}>
+                {slide.headerTitle}
+              </Text>
+              <Text style={styles.onBoardingHeaderDescription}>
+                {slide.headerDescription}
+              </Text>
+              <Image
+                source={currentIndex <= 2 && onboardingData[currentIndex].image}
                 style={{
-                  // backgroundColor: 'orange',
-                  height: height,
-                  width: width,
-                  marginTop: 100,
-                  // justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <Text style={styles.onBoardingheaderTitle}>
-                  {slide.headerTitle}
-                </Text>
-                <Text style={styles.onBoardingHeaderDescription}>
-                  {slide.headerDescription}
-                </Text>
-                <Image
-                  source={slide.image}
-                  style={{
-                    height: 300,
-                    width: 300,
-                    borderRadius: 150,
-                  }}
-                />
+                  height: 300,
+                  width: 300,
+                  borderRadius: 150,
+                }}
+              />
 
-                <Text style={styles.onBoardingTitle}>{slide.title}</Text>
-                <Text style={styles.onBoardingDescription}>
-                  {slide.description}
-                </Text>
-              </View>
-            </>
+              <Text style={styles.onBoardingTitle}>
+                {onboardingData[currentIndex].title}
+              </Text>
+              <Text style={styles.onBoardingDescription}>
+                {onboardingData[currentIndex].description}
+              </Text>
+            </View>
           );
         })}
       </ScrollView>
-      <View style={styles.dotIndicatorContainer}>{renderDots()}</View>
+      <View style={styles.dotIndicatorContainer}>
+        {renderOnboardingIndicators()}
+      </View>
       <View style={styles.onBoardingCtaContainer}>
+        {/* if currrent index is 0, only then show skip button */}
         {currentIndex === 0 && (
           <Cta
             ctaText="Skip"
-            currentIndex={currentIndex}
-            setCurrentIndex={setCurrentIndex}
+            onPress={() => navigation.navigate('LoginScreen')}
           />
         )}
-        {currentIndex > 0 && <Cta ctaText="Previous" />}
-
+        {/* if current index is greater then 0, that is the screen is either screen no 2 or screen no 3, show previous */}
+        {currentIndex > 0 && (
+          <Cta
+            ctaText="Previous"
+            onPress={() => setCurrentIndex(currentIndex - 1)}
+          />
+        )}
+        {/* if current index is less then onboarding screens length -1 , keep showing next button,otherwise show start */}
         {currentIndex < onboardingData.length - 1 && (
           <Cta
             ctaText="Next"
-            currentIndex={currentIndex}
-            setCurrentIndex={setCurrentIndex}
+            onPress={() => setCurrentIndex(currentIndex + 1)}
           />
         )}
+        {/* // if current index is equal to array length -1, i.e last screen is reached, only then show start */}
         {currentIndex === onboardingData.length - 1 && (
-          <Cta
-            ctaText="Start"
-            currentIndex={currentIndex}
-            setCurrentIndex={setCurrentIndex}
-          />
+          <Cta ctaText="Start" onPress={() => setUserData()} />
         )}
       </View>
     </View>
@@ -148,7 +168,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 28,
     textAlign: 'center',
-    marginTop: 12,
+    marginTop: 6,
     fontWeight: 'bold',
   },
   onBoardingDescription: {
@@ -171,7 +191,7 @@ const styles = StyleSheet.create({
 
   dotIndicatorContainer: {
     position: 'absolute',
-    bottom: 100,
+    bottom: 160,
     width: '100%',
     // backgroundColor: 'orange',
     alignItems: 'center',
@@ -200,7 +220,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     position: 'absolute',
     width: '100%',
-    bottom: 30,
+    bottom: 60,
     paddingHorizontal: 16,
   },
 });

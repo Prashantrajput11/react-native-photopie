@@ -2,12 +2,10 @@ import {Pressable, StyleSheet, Text, Touchable, View} from 'react-native';
 import React from 'react';
 import {LIGHT} from '../utils/Colors';
 
-const Cta = ({ctaText, currentIndex, setCurrentIndex}) => {
+const Cta = ({ctaText, currentIndex, onPress}) => {
   return (
     <View>
-      <Pressable
-        style={styles.ctaContainer}
-        onPress={() => setCurrentIndex(currentIndex + 1)}>
+      <Pressable style={styles.ctaContainer} onPress={() => onPress()}>
         <Text style={styles.ctaText}>{ctaText}</Text>
       </Pressable>
     </View>
@@ -26,9 +24,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: LIGHT,
     paddingHorizontal: 6,
-    paddingVertical: 4,
+    paddingVertical: 10,
     width: 80,
-    borderRadius: 6,
+    borderRadius: 8,
     // position: 'absolute',
     // bottom: 30,
     // marginHorizontal: 6,
