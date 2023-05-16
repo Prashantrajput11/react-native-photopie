@@ -10,21 +10,21 @@ const SplashScreen = ({navigation}) => {
   // useEffect Hook
   useEffect(() => {
     setTimeout(() => {
-      // navigation.navigate('WelcomeScreen');
-      isUserNew();
+      navigation.navigate('WelcomeScreen');
+      // isUserNew();
     }, 4000);
   }, []);
 
-  const isUserNew = async () => {
-    const isNewUser = AsyncStorage.getItem('IS_NEW_USER');
+  // const isUserNew = async () => {
+  //   const isNewUser = AsyncStorage.getItem('IS_NEW_USER');
 
-    if (isNewUser !== null) {
-      navigation.navigate('LoginScreen');
-    } else {
-      navigation.navigate('WelcomeScreen');
-    }
-    console.log(isNewUser);
-  };
+  //   if (isNewUser !== null) {
+  //     navigation.navigate('WelcomeScreen');
+  //   } else {
+  //     navigation.navigate('WelcomeScreen');
+  //   }
+  //   console.log(isNewUser);
+  // };
 
   return (
     <View style={styles.container}>
@@ -37,7 +37,7 @@ const SplashScreen = ({navigation}) => {
       />
       <View style={styles.logoContainer}>
         <Image
-          source={require('../assets/android/mipmap-hdpi/ic_launcher_round.png')}
+          source={require('../assets/android/mipmap-xxxhdpi/ic_launcher_round.png')}
           style={styles.image}
         />
       </View>

@@ -58,7 +58,7 @@ const CustomSliderOne = () => {
   const setUserData = async () => {
     AsyncStorage.setItem('IS_NEW_USER', true);
 
-    navigation.navigate('LoginScreen');
+    navigation.navigate('SignupScreen');
   };
 
   // Render onboarding screen indicators
@@ -154,7 +154,10 @@ const CustomSliderOne = () => {
         )}
         {/* // if current index is equal to array length -1, i.e last screen is reached, only then show start */}
         {currentIndex === onboardingData.length - 1 && (
-          <Cta ctaText="Start" onPress={() => setUserData()} />
+          <Cta
+            ctaText="Start"
+            onPress={() => navigation.navigate('SignupScreen')}
+          />
         )}
       </View>
     </View>
