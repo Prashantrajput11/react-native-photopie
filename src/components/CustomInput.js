@@ -2,7 +2,7 @@ import {StyleSheet, Text, TextInput, View, Image} from 'react-native';
 import React from 'react';
 import {THEME_COLOR2} from '../utils/Colors';
 
-const CustomInput = ({placeholder, type, icon, isSecured}) => {
+const CustomInput = ({placeholder, type, icon, isSecured, onChangeText}) => {
   return (
     <View style={styles.container}>
       {icon && <Image source={icon} style={{height: 20, width: 20}} />}
@@ -10,6 +10,7 @@ const CustomInput = ({placeholder, type, icon, isSecured}) => {
         placeholder={placeholder}
         keyboardType={type}
         secureTextEntry={isSecured}
+        onChangeText={onChangeText}
       />
     </View>
   );

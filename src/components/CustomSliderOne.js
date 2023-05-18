@@ -136,6 +136,7 @@ const CustomSliderOne = () => {
           <Cta
             ctaText="Skip"
             onPress={() => navigation.navigate('LoginScreen')}
+            bgColor={LIGHT}
           />
         )}
         {/* if current index is greater then 0, that is the screen is either screen no 2 or screen no 3, show previous */}
@@ -143,6 +144,7 @@ const CustomSliderOne = () => {
           <Cta
             ctaText="Previous"
             onPress={() => setCurrentIndex(currentIndex - 1)}
+            bgColor={LIGHT}
           />
         )}
         {/* if current index is less then onboarding screens length -1 , keep showing next button,otherwise show start */}
@@ -150,13 +152,15 @@ const CustomSliderOne = () => {
           <Cta
             ctaText="Next"
             onPress={() => setCurrentIndex(currentIndex + 1)}
+            bgColor={LIGHT}
           />
         )}
         {/* // if current index is equal to array length -1, i.e last screen is reached, only then show start */}
         {currentIndex === onboardingData.length - 1 && (
           <Cta
             ctaText="Start"
-            onPress={() => navigation.navigate('SignupScreen')}
+            onPress={() => navigation.navigate('LoginScreen')}
+            bgColor={LIGHT}
           />
         )}
       </View>
