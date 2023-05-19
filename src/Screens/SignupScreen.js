@@ -9,6 +9,7 @@ import Cta from '../components/Cta';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import {useNavigation} from '@react-navigation/native';
+import Loader from '../components/Loader';
 
 const SignupScreen = () => {
   // navigation hook
@@ -20,6 +21,7 @@ const SignupScreen = () => {
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [hasStartedTyping, setHasStartedTyping] = useState(false);
+  const [showLoader, setShowLoader] = useState(false);
 
   // Init local states
   const [badName, setBadName] = useState(false);
@@ -75,7 +77,10 @@ const SignupScreen = () => {
         password: password,
         userId: userId,
       })
-      .then(res => navigation.navigate('LoginScreen'))
+      .then(res => {
+        setShowLoader(false); // hide the loader
+        navigation.goBack();
+      })
       .catch(error => console.log(error));
   };
 
@@ -99,11 +104,14 @@ const SignupScreen = () => {
       .then(querySnapshot => {
         /* ... */
 
-        console.log(JSON.stringify(querySnapshot.docs));
+        const docsData = querySnapshot.docs.map(doc => doc.data());
 
         if (querySnapshot.docs.length === 0) {
+          setShowLoader(true);
           // create a new user
           createNewUser();
+        } else {
+          Alert.alert('user already exist');
         }
       })
       .catch(error => {
@@ -113,6 +121,8 @@ const SignupScreen = () => {
 
   return (
     <View>
+      {/* show loader */}
+      {showLoader && <Loader isModalVisible={true} />}
       <CustomInput
         placeholder="enter name"
         icon={require('../assets/user.png')}

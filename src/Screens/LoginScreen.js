@@ -6,11 +6,42 @@ import {LIGHT, THEME_COLOR2} from '../utils/Colors';
 import {useNavigation} from '@react-navigation/native';
 
 const LoginScreen = () => {
+  // Init local states
   const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
+  const [badEmail, setBadEmail] = useState(true);
+  const [badPassword, setBadPassword] = useState(false);
 
   const navigation = useNavigation();
+
+  const validateUserLogin = () => {
+    let valid = true;
+
+    // validate for email
+    if ((email = '')) {
+      valid = false;
+      setBadEmail(true);
+    } else {
+      setBadEmail(false);
+    }
+
+    // validate for passowrd
+
+    if ((password = '')) {
+      valid = false;
+      setBadPassword(true);
+    } else {
+      setBadPassword(false);
+    }
+
+    return valid;
+  };
+
+  //  Handle user login
+  const handleLogin = () => {
+    // 1: check user exist or not
+    // 2:if not then redirect to sign up page
+  };
 
   return (
     <View style={styles.loginContainer}>
