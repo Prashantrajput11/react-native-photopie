@@ -10,7 +10,9 @@ const SplashScreen = ({navigation}) => {
   // useEffect Hook
   useEffect(() => {
     setTimeout(() => {
-      navigation.navigate('WelcomeScreen');
+      // navigation.navigate('WelcomeScreen');
+      navigation.navigate('Main');
+
       // isUserNew();
     }, 4000);
   }, []);

@@ -6,6 +6,7 @@ import SplashScreen from '../Screens/SplashScreen';
 import WelcomeScreen from '../Screens/WelcomeScreen';
 import LoginScreen from '../Screens/LoginScreen';
 import SignupScreen from '../Screens/SignupScreen';
+import Main from '../Screens/Main';
 
 const Stack = createNativeStackNavigator();
 const AppNavigator = () => {
@@ -28,6 +29,10 @@ const AppNavigator = () => {
         <Stack.Screen
           name={'SignupScreen'}
           component={SignupScreen}
+          options={{headerShown: false}}></Stack.Screen>
+        <Stack.Screen
+          name={'Main'}
+          component={Main}
           options={{headerShown: false}}></Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>

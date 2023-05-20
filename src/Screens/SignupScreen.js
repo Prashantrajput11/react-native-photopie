@@ -110,11 +110,16 @@ const SignupScreen = () => {
           setShowLoader(true);
           // create a new user
           createNewUser();
+          setShowLoader(false);
         } else {
+          setShowLoader(false); // Hide the loader
+
           Alert.alert('user already exist');
         }
       })
       .catch(error => {
+        setShowLoader(false); // Hide the loader
+
         console.log(error);
       });
   };
