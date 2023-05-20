@@ -4,6 +4,8 @@ import {
   View,
   PermissionsAndroid,
   Pressable,
+  Image,
+  FlatList,
 } from 'react-native';
 import React, {useRef} from 'react';
 
@@ -13,6 +15,9 @@ import {utils} from '@react-native-firebase/app';
 
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import BottomSheet from '../components/BottomSheet';
+
+// Constant imports
+import {UPLOAD_OPTIONS} from '../utils/Constants';
 
 const Upload = () => {
   const refRBSheet = useRef();
@@ -63,11 +68,20 @@ const Upload = () => {
   // return
   return (
     <View>
-      <BottomSheet ref={refRBSheet}>
-        <View>
-          <Text>Upload from camera</Text>
-          <Text>Upload from gallery</Text>
-        </View>
+      <BottomSheet ref={refRBSheet} animationType="slide" height={200}>
+        <FlatList
+          data={UPLOAD_OPTIONS}
+          keyExtractor={item => item.id}
+          renderItem={({item}) => (
+            <Pressable style={styles.uploadOptions}>
+              <Image
+                source={item.image}
+                style={{height: 20, width: 20, marginRight: 16}}
+              />
+              <Text>{item.text}</Text>
+            </Pressable>
+          )}
+        />
       </BottomSheet>
       <Pressable onPress={() => refRBSheet.current.open()}>
         <Text>Camera</Text>
@@ -79,4 +93,14 @@ const Upload = () => {
 
 export default Upload;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  uploadOptionsContainer: {
+    borderBottomWidth: 2,
+    borderBottomColor: '#000',
+  },
+
+  uploadOptions: {
+    flexDirection: 'row',
+    marginBottom: 16,
+  },
+});
