@@ -7,6 +7,8 @@ import WelcomeScreen from '../Screens/WelcomeScreen';
 import LoginScreen from '../Screens/LoginScreen';
 import SignupScreen from '../Screens/SignupScreen';
 import Main from '../Screens/Main';
+import Upload from '../bottomTabs/Upload';
+import Home from '../bottomTabs/Home';
 
 const Stack = createNativeStackNavigator();
 const AppNavigator = () => {
@@ -33,6 +35,10 @@ const AppNavigator = () => {
         <Stack.Screen
           name={'Main'}
           component={Main}
+          options={{headerShown: false}}></Stack.Screen>
+        <Stack.Screen
+          name={'Home'}
+          component={Home}
           options={{headerShown: false}}></Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>

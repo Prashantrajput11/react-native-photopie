@@ -6,3 +6,4 @@ export const THEME_COLOR4 = '#D4ADFC';
 
 export const DARK = '#000';
 export const LIGHT = '#fff';
+export const GRAY = '#cccccc';

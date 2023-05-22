@@ -1,5 +1,5 @@
-import {Image, StyleSheet, Text, View, Pressable} from 'react-native';
-import React, {useState} from 'react';
+import {Image, StyleSheet, Text, View, Pressable, FlatList} from 'react-native';
+import React, {useState, useRef} from 'react';
 import {THEME_COLOR2} from '../utils/Colors';
 import Home from '../bottomTabs/Home';
 import Connection from '../bottomTabs/Connection';
@@ -7,7 +7,15 @@ import Upload from '../bottomTabs/Upload';
 import Notifications from '../bottomTabs/Notifications';
 import Jobs from '../bottomTabs/Jobs';
 
+import BottomSheet from '../components/BottomSheet';
+
+import {UPLOAD_OPTIONS} from '../utils/Constants';
+import {useNavigation} from '@react-navigation/native';
+
 const DrawerScreen = () => {
+  const refRBSheet = useRef();
+  const navigation = useNavigation();
+
   const [selectedTab, setSelectedTab] = useState(0);
   return (
     <>
@@ -17,6 +25,7 @@ const DrawerScreen = () => {
       {selectedTab == 3 && <Notifications />}
       {selectedTab == 4 && <Jobs />}
 
+      {/* render bottom tabs  */}
       <View style={styles.bottomTabsContainer}>
         <View style={styles.tabs}>
           {/* Home Tab */}
@@ -38,7 +47,11 @@ const DrawerScreen = () => {
           </Pressable>
 
           {/* Upload Tab */}
-          <Pressable style={styles.singleTab} onPress={() => setSelectedTab(2)}>
+          <Pressable
+            style={styles.singleTab}
+            onPress={() => {
+              setSelectedTab(2);
+            }}>
             <Image
               source={require('../assets/plus.png')}
               style={{height: 20, width: 20}}
@@ -47,7 +60,11 @@ const DrawerScreen = () => {
           </Pressable>
 
           {/* Notifications tab */}
-          <Pressable style={styles.singleTab} onPress={() => setSelectedTab(3)}>
+          <Pressable
+            style={styles.singleTab}
+            onPress={() => {
+              setSelectedTab(3);
+            }}>
             <Image
               source={require('../assets/bell.png')}
               style={{height: 20, width: 20}}
@@ -91,5 +108,15 @@ const styles = StyleSheet.create({
     // backgroundColor: 'green',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+
+  uploadOptionsContainer: {
+    borderBottomWidth: 2,
+    borderBottomColor: '#000',
+  },
+
+  uploadOptions: {
+    flexDirection: 'row',
+    marginBottom: 16,
   },
 });

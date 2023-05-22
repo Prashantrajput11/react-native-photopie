@@ -18,7 +18,9 @@ const BottomSheet = React.forwardRef((props, ref) => {
             backgroundColor: THEME_COLOR2_SHADE_1,
             paddingHorizontal: 16,
             paddingVertical: 12,
-            borderRadius: 16,
+            // borderTopRadius: 16,
+            borderTopLeftRadius: 16,
+            borderTopRightRadius: 16,
           },
           wrapper: {
             backgroundColor: 'transparent',
