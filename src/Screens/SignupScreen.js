@@ -1,8 +1,12 @@
-import {StyleSheet, Text, View, Alert} from 'react-native';
+import {StyleSheet, Text, View, Alert, Pressable} from 'react-native';
 import uuid from 'react-native-uuid';
 import React, {useState} from 'react';
 import CustomInput from '../components/CustomInput';
-import {THEME_COLOR2, THEME_COLOR4} from '../utils/Colors';
+import {
+  THEME_COLOR2,
+  THEME_COLOR2_SHADE_1,
+  THEME_COLOR4,
+} from '../utils/Colors';
 import Cta from '../components/Cta';
 
 // Firebase imports
@@ -63,34 +67,26 @@ const SignupScreen = () => {
   };
 
   // create new user
-  const createNewUser = () => {
+  const createNewUser = async () => {
+    setShowLoader(true);
     // get a unique id
     let userId = uuid.v4();
 
-    firestore()
-      .collection('Users')
-      .doc(userId)
-      .set({
+    try {
+      await firestore().collection('Users').doc(userId).set({
         name: name,
         email: email,
-        phone: phone,
-        password: password,
-        userId: userId,
-      })
-      .then(res => {
-        setShowLoader(false); // hide the loader
-        navigation.goBack();
-      })
-      .catch(error => console.log(error));
+      });
+      // If user created successsfully, hide the loader
+      setShowLoader(true);
+      navigation.navigate('LoginScreen');
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   // signup user
   const handleSignup = async () => {
-    // if validate data is false, stop the signup
-    if (!validateData()) {
-      return;
-    }
-
     // condition 1:check is user already exist, if yes, then redirect to login
     //condition 2 : create an account if not created
     firestore().collection('Users');
@@ -107,10 +103,8 @@ const SignupScreen = () => {
         const docsData = querySnapshot.docs.map(doc => doc.data());
 
         if (querySnapshot.docs.length === 0) {
-          setShowLoader(true);
           // create a new user
           createNewUser();
-          setShowLoader(false);
         } else {
           setShowLoader(false); // Hide the loader
 
@@ -130,13 +124,17 @@ const SignupScreen = () => {
       {showLoader && <Loader isModalVisible={true} />}
       <CustomInput
         placeholder="enter name"
-        icon={require('../assets/user.png')}
+        icon={require('../assets/user_signup.png')}
+        iconHeight={30}
+        iconWidth={30}
         onChangeText={text => setName(text)}
       />
       {badName && <Text style={{color: 'red'}}>Not a valid name</Text>}
       <CustomInput
         placeholder="enter email"
-        icon={require('../assets/email.png')}
+        icon={require('../assets/photopie_email.png')}
+        iconHeight={30}
+        iconWidth={30}
         onChangeText={text => setEmail(text)}
       />
       {badEmail && <Text style={{color: 'red'}}>Not a valid email</Text>}
@@ -144,6 +142,9 @@ const SignupScreen = () => {
       <CustomInput
         placeholder="enter phone "
         type={'number-pad'}
+        icon={require('../assets/telephone.png')}
+        iconHeight={20}
+        iconWidth={20}
         onChangeText={text => setPhone(text)}
       />
       {badPhone && <Text style={{color: 'red'}}>Not a valid phone</Text>}
@@ -151,14 +152,63 @@ const SignupScreen = () => {
       <CustomInput
         placeholder="enter passsword"
         isSecured={true}
+        icon={require('../assets/photopie_password.png')}
+        iconHeight={30}
+        iconWidth={30}
         onChangeText={text => setPassword(text)}
       />
       {badPassword && <Text style={{color: 'red'}}>Not a valid password</Text>}
 
       {/* render submit cta */}
 
-      <View style={styles.ctaContainer}>
-        <Cta ctaText={'Submit'} bgColor={THEME_COLOR2} onPress={handleSignup} />
+      <View style={{marginHorizontal: 16, marginVertical: 32}}>
+        <Pressable
+          style={{
+            backgroundColor: THEME_COLOR2,
+            paddingHorizontal: 18,
+            // marginHorizontal: 16,
+            // marginVertical: 32,
+            paddingVertical: 8,
+            width: '100%',
+            borderRadius: 6,
+          }}
+          onPress={() => {
+            if (validateUserLogin()) {
+              handleSignup();
+            }
+          }}>
+          <Text
+            style={{
+              color: '#fff',
+              textAlign: 'center',
+              fontSize: 20,
+              fontWeight: 'bold',
+            }}>
+            Sign Up
+          </Text>
+        </Pressable>
+      </View>
+
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+        <Text>Already have an account?</Text>
+
+        <Pressable onPress={() => navigation.navigate('LoginScreen')}>
+          <Text
+            style={{
+              color: THEME_COLOR2,
+              marginLeft: 6,
+              fontWeight: 'bold',
+              borderBottomColor: THEME_COLOR2_SHADE_1,
+              borderBottomWidth: 1,
+            }}>
+            Sign in
+          </Text>
+        </Pressable>
       </View>
     </View>
   );

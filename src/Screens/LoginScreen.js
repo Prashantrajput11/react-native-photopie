@@ -1,15 +1,16 @@
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {Alert, Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
 import CustomInput from '../components/CustomInput';
 import Cta from '../components/Cta';
 import {LIGHT, THEME_COLOR2} from '../utils/Colors';
 import {useNavigation} from '@react-navigation/native';
+import firestore from '@react-native-firebase/firestore';
 
 const LoginScreen = () => {
   // Init local states
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [badEmail, setBadEmail] = useState(true);
+  const [badEmail, setBadEmail] = useState(false);
   const [badPassword, setBadPassword] = useState(false);
 
   const navigation = useNavigation();
@@ -18,7 +19,7 @@ const LoginScreen = () => {
     let valid = true;
 
     // validate for email
-    if ((email = '')) {
+    if (email == '') {
       valid = false;
       setBadEmail(true);
     } else {
@@ -27,7 +28,7 @@ const LoginScreen = () => {
 
     // validate for passowrd
 
-    if ((password = '')) {
+    if (password == '') {
       valid = false;
       setBadPassword(true);
     } else {
@@ -38,34 +39,94 @@ const LoginScreen = () => {
   };
 
   //  Handle user login
-  const handleLogin = () => {
-    // 1: check user exist or not
+  const handleLogin = async () => {
+    try {
+      const querySnapshot = await firestore()
+        .collection('Users')
+        .where('email', '==', email)
+        .get();
+
+      // Check if querySnapshot length is not 0, if true, means user with email id exists
+
+      if (querySnapshot.docs.length === 0) {
+        Alert.alert('no account exists');
+      } else {
+        if (querySnapshot.docs[0].data().password == password) {
+          navigation.navigate('Main');
+        } else {
+          Alert.alert('wrong password');
+        }
+      }
+    } catch (error) {
+      console.log('error in login query', error);
+    }
     // 2:if not then redirect to sign up page
   };
 
   return (
     <View style={styles.loginContainer}>
+      <View style={{height: 300}}>
+        <Image
+          source={require('../assets/photopie_login.png')}
+          style={{
+            height: '100%',
+            width: '100%',
+            // marginTop: 60,
+            resizeMode: 'cover',
+          }}
+        />
+      </View>
       <View>
         <CustomInput
           placeholder="enter email"
-          icon={require('../assets/email.png')}
+          icon={require('../assets/photopie_email.png')}
+          iconHeight={30}
+          iconWidth={30}
+          value={email}
           onChangeText={text => setEmail(text)}
         />
+        {badEmail && <Text style={{color: 'red'}}>Please enter email</Text>}
+
         <CustomInput
           placeholder="enter password"
-          icon={require('../assets/email.png')}
+          icon={require('../assets/photopie_password.png')}
+          iconHeight={30}
+          iconWidth={30}
+          password={password}
           onChangeText={text => setPassword(text)}
         />
+        {badPassword && (
+          <Text style={{color: 'red'}}>Please enter password</Text>
+        )}
       </View>
 
-      <View
-        style={{
-          marginHorizontal: 6,
-          borderRadius: 6,
-          alignItems: 'center',
-          marginTop: 20,
-        }}>
-        <Cta ctaText={'Login'} bgColor={THEME_COLOR2} ctaTextColor={LIGHT} />
+      {/* Login Cta */}
+      <View style={{marginHorizontal: 16, marginVertical: 32}}>
+        <Pressable
+          style={{
+            backgroundColor: THEME_COLOR2,
+            paddingHorizontal: 18,
+            // marginHorizontal: 16,
+            // marginVertical: 32,
+            paddingVertical: 8,
+            width: '100%',
+            borderRadius: 6,
+          }}
+          onPress={() => {
+            if (validateUserLogin()) {
+              handleLogin();
+            }
+          }}>
+          <Text
+            style={{
+              color: '#fff',
+              textAlign: 'center',
+              fontSize: 20,
+              fontWeight: 'bold',
+            }}>
+            Login
+          </Text>
+        </Pressable>
       </View>
 
       <View style={styles.signupLinkContainer}>
@@ -83,8 +144,10 @@ export default LoginScreen;
 const styles = StyleSheet.create({
   loginContainer: {
     flex: 1,
-    justifyContent: 'center',
+    // justifyContent: 'center',
     // alignItems: 'center',
+    backgroundColor: '#fff',
+    // backgroundColor: 'orange',
   },
   signupLinkContainer: {
     // backgroundColor: 'orange',
@@ -93,6 +156,7 @@ const styles = StyleSheet.create({
     margin: 16,
   },
   signupText: {
-    color: 'red',
+    color: THEME_COLOR2,
+    fontWeight: '700',
   },
 });

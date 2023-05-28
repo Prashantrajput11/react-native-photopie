@@ -11,8 +11,8 @@ const SplashScreen = ({navigation}) => {
   useEffect(() => {
     setTimeout(() => {
       // navigation.navigate('WelcomeScreen');
-      navigation.navigate('Main');
-
+      // navigation.navigate('Main');
+      navigation.navigate('SignupScreen');
       // isUserNew();
     }, 4000);
   }, []);
