@@ -76,6 +76,9 @@ const SignupScreen = () => {
       await firestore().collection('Users').doc(userId).set({
         name: name,
         email: email,
+        password: password,
+        phone: phone,
+        userId: userId,
       });
       // If user created successsfully, hide the loader
       setShowLoader(true);

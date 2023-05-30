@@ -3,8 +3,11 @@ import {View, Text, FlatList, StyleSheet, Image} from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import {useWindowDimensions} from 'react-native';
 import {GRAY} from '../utils/Colors';
+import CustomHeader from '../components/CustomHeader';
+import {useNavigation} from '@react-navigation/native';
 
 const Home = () => {
+  const navigation = useNavigation();
   // Init local states
   const [posts, setPosts] = useState([]);
   const [loadingImages, setLoadingImages] = useState(true); // New state variable
@@ -26,28 +29,31 @@ const Home = () => {
   }, []);
 
   return (
-    <View style={[styles.feedPostContainer]}>
-      <FlatList
-        data={posts}
-        keyExtractor={item => item.postId}
-        renderItem={({item}) => (
-          <View style={styles.singlePostContainer}>
-            <Text style={styles.userCaption}>{item.caption}</Text>
-            {loadingImages ? ( // Check if images are still loading
-              <Text>Loading</Text>
-            ) : (
-              <Image
-                source={{
-                  uri: item.postImage,
-                }}
-                style={{height: 200, width: 200, width: '100%'}}
-              />
-            )}
-            {/* Display other post details */}
-          </View>
-        )}
-      />
-    </View>
+    <>
+      <CustomHeader onIconPress={() => navigation.openDrawer()} />
+      <View style={[styles.feedPostContainer]}>
+        <FlatList
+          data={posts}
+          keyExtractor={item => item.postId}
+          renderItem={({item}) => (
+            <View style={styles.singlePostContainer}>
+              <Text style={styles.userCaption}>{item.caption}</Text>
+              {loadingImages ? ( // Check if images are still loading
+                <Text>Loading</Text>
+              ) : (
+                <Image
+                  source={{
+                    uri: item.postImage,
+                  }}
+                  style={{height: 200, width: 200, width: '100%'}}
+                />
+              )}
+              {/* Display other post details */}
+            </View>
+          )}
+        />
+      </View>
+    </>
   );
 };
 

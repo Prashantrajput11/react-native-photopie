@@ -3,12 +3,13 @@ import React from 'react';
 
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import DrawerScreen from '../drawer/DrawerScreen';
+import CustomDrawer from '../drawer/CustomDrawer';
 
 const Drawer = createDrawerNavigator();
 
 function Main() {
   return (
-    <Drawer.Navigator>
+    <Drawer.Navigator drawerContent={props => <CustomDrawer {...props} />}>
       <Drawer.Screen
         name="DrawerScreen"
         component={DrawerScreen}

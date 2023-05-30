@@ -5,6 +5,7 @@ import Cta from '../components/Cta';
 import {LIGHT, THEME_COLOR2} from '../utils/Colors';
 import {useNavigation} from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginScreen = () => {
   // Init local states
@@ -52,7 +53,7 @@ const LoginScreen = () => {
         Alert.alert('no account exists');
       } else {
         if (querySnapshot.docs[0].data().password == password) {
-          navigation.navigate('Main');
+          goToNextScreen(querySnapshot.docs[0].data());
         } else {
           Alert.alert('wrong password');
         }
@@ -61,6 +62,18 @@ const LoginScreen = () => {
       console.log('error in login query', error);
     }
     // 2:if not then redirect to sign up page
+  };
+
+  // Next
+
+  const goToNextScreen = async data => {
+    await AsyncStorage.setItem('NAME', data.name);
+    await AsyncStorage.setItem('EMAIL', data.email);
+    await AsyncStorage.setItem('PHONE', data.phone);
+    await AsyncStorage.setItem('USER_ID', data.userId);
+    await AsyncStorage.setItem('IS_USER_LOGGED_IN', 'yes');
+
+    navigation.navigate('Main');
   };
 
   return (

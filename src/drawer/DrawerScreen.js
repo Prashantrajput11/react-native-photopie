@@ -91,11 +91,11 @@ export default DrawerScreen;
 const styles = StyleSheet.create({
   bottomTabsContainer: {
     flex: 1,
-    // backgroundColor: 'orange',
+    backgroundColor: 'orange',
   },
   tabs: {
-    // backgroundColor: 'green',
-    height: 80,
+    backgroundColor: '#fff',
+    height: 120,
     position: 'absolute',
     bottom: 0,
     width: '100%',

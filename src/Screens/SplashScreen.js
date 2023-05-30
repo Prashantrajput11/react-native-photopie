@@ -12,10 +12,20 @@ const SplashScreen = ({navigation}) => {
     setTimeout(() => {
       // navigation.navigate('WelcomeScreen');
       // navigation.navigate('Main');
-      navigation.navigate('SignupScreen');
+      checkStatus();
       // isUserNew();
     }, 4000);
   }, []);
+
+  const checkStatus = async () => {
+    const status = await AsyncStorage.getItem('IS_USER_LOGGED_IN');
+
+    if (status) {
+      navigation.navigate('Main');
+    } else {
+      navigation.navigate('LoginScreen');
+    }
+  };
 
   // const isUserNew = async () => {
   //   const isNewUser = AsyncStorage.getItem('IS_NEW_USER');
