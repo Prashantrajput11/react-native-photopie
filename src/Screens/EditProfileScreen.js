@@ -1,3 +1,4 @@
+// React Native Imports
 import {
   StyleSheet,
   Text,
@@ -7,38 +8,46 @@ import {
   Pressable,
   PermissionsAndroid,
 } from 'react-native';
-import React, {useRef, useState} from 'react';
-import CustomInput from '../components/CustomInput';
-import {
-  DARK,
-  GRAY,
-  LIGHT,
-  THEME_COLOR2,
-  THEME_COLOR2_SHADE_1,
-} from '../utils/Colors';
-import storage from '@react-native-firebase/storage';
-import firestore from '@react-native-firebase/firestore';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+
+// React Imports
+import React, {useRef, useState, useEffect} from 'react';
+
+// Custom Component Imports
 import Loader from '../components/Loader';
+
+// Utils Imports
+import {DARK, GRAY, LIGHT, THEME_COLOR2} from '../utils/Colors';
+
+//  Hooks Imports
 import {useNavigation} from '@react-navigation/native';
 
-// Camera Imports
-
+// Third Party Component/ Libraries Imports
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-
-// Bottom sheet Imports
 import RBSheet from 'react-native-raw-bottom-sheet';
 
-const EditProfileScreen = () => {
-  // create bottomsheet ref
+// Firebase imports
+import storage from '@react-native-firebase/storage';
+import firestore from '@react-native-firebase/firestore';
 
+const EditProfileScreen = ({route}) => {
+  // Access the imageData from route.params
+  const imageDataFinal = route.params?.imageData;
+  const userBioFinal = route.params?.updatedBio;
+  // create bottomsheet ref
   const refRBSheet = useRef();
+
+  // Navigation Hook
   const navigation = useNavigation();
 
-  const [imageData, setImageData] = useState(null);
+  // Init Local stattes
+  const [imageData, setImageData] = useState({assets: [{uri: ''}]});
   const [showLoader, setShowLoader] = useState(false);
+  const [userBio, setUserBio] = useState('');
 
-  // console.log(imageData.assets);
+  //---------------------------------------------------//
+
+  // Functions related to this screen  -Start//
 
   // Hanlde User's Camera Permission
   const handleCameraPermission = async type => {
@@ -78,7 +87,8 @@ const EditProfileScreen = () => {
     if (!result.didCancel) {
       console.log({result});
 
-      setImageData(result.assets[0].uri);
+      // setImageData(imageData && result.assets[0].uri);
+      setImageData(result);
     }
   };
 
@@ -87,41 +97,50 @@ const EditProfileScreen = () => {
     const result = await launchImageLibrary({mediaType: 'photo'});
 
     if (!result.didCancel) {
-      setImageData(result.assets[0].uri);
+      // setImageData(result.assets[0].uri);
+      setImageData(result);
     }
   };
 
   // Update Profile
-
   const updateProfile = async () => {
     setShowLoader(true);
+
     try {
-      // create a reference in the Firebase storage
-      const reference = storage().ref(imageData);
-      console.log({reference});
-      // add the path to the file
-      const pathToFile = imageData;
+      console.log('asset', imageData.assets[0]);
+      if (imageData.assets[0].uri) {
+        console.log('asset inside if', imageData.assets[0]);
+        const reference = storage().ref(imageData.assets[0].fileName);
+        const pathToFile = imageData.assets[0].uri;
+        await reference.putFile(pathToFile);
+        const url = await storage()
+          .ref(imageData.assets[0].fileName)
+          .getDownloadURL();
 
-      // Use putFile to upload the file
-      await reference.putFile(pathToFile);
-
-      // Get the URL that needs to be saved in Firestore
-      const url = await storage().ref(imageData).getDownloadURL();
-
-      const USER_ID = await AsyncStorage.getItem('USER_ID');
-      console.log(USER_ID);
-      // Update the user document in Firestore with the URL
-      await firestore().collection('Users').doc(USER_ID).update({
-        userImage: url,
-      });
-      console.log('succesfuuly updated');
+        const USER_ID = await AsyncStorage.getItem('USER_ID');
+        await firestore().collection('Users').doc(USER_ID).update({
+          userImage: url,
+          userBio: userBio,
+        });
+        // } else {
+        //   const USER_ID = await AsyncStorage.getItem('USER_ID');
+        //   await firestore().collection('Users').doc(USER_ID).update({
+        //     userBio: userBio,
+        //   });
+      }
 
       setShowLoader(false);
+      navigation.navigate('ProfileScreen');
     } catch (error) {
       setShowLoader(false);
       console.log('Error while updating', error);
     }
   };
+
+  // Functions related to this screen  -End//
+  useEffect(() => {
+    setUserBio(userBioFinal);
+  }, [userBioFinal]);
 
   return (
     <View>
@@ -130,32 +149,38 @@ const EditProfileScreen = () => {
       <Text style={{fontSize: 20, color: DARK, fontWeight: 'bold'}}>
         Edit Profile
       </Text>
-      <View style={{flexDirection: 'row'}}>
-        {imageData == null ? (
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginHorizontal: 16,
+        }}>
+        {imageData.assets[0].uri == '' ? (
           <Image
-            source={require('../assets//twitter_profile_picture.jpeg')}
+            source={{uri: imageDataFinal}}
             style={{height: 80, width: 80, borderRadius: 40}}
           />
         ) : (
           <Image
-            source={{uri: imageData}}
+            source={{uri: imageData.assets[0].uri}}
             style={{height: 80, width: 80, borderRadius: 40}}
           />
         )}
-
-        <Pressable
-          style={{
-            backgroundColor: THEME_COLOR2,
-            paddingHorizontal: 12,
-            paddingVertical: 6,
-            borderRadius: 6,
-          }}
-          onPress={() => {
-            updateProfile();
-            navigation.navigate('EditProfileScreen');
-          }}>
-          <Text style={{color: LIGHT}}>Save</Text>
-        </Pressable>
+        {(!imageData.assets[0].uri == '' || !userBio == '') && (
+          <Pressable
+            style={{
+              backgroundColor: THEME_COLOR2,
+              paddingHorizontal: 12,
+              paddingVertical: 6,
+              borderRadius: 6,
+            }}
+            onPress={() => {
+              updateProfile();
+            }}>
+            <Text style={{color: LIGHT}}>Save</Text>
+          </Pressable>
+        )}
       </View>
 
       <Pressable
@@ -179,7 +204,11 @@ const EditProfileScreen = () => {
       {/* Field To Edit Bio  */}
       <View style={styles.editFieldsContainer}>
         <Text style={styles.editFieldLabel}>Bio</Text>
-        <TextInput placeholder="Add your Bio" />
+        <TextInput
+          placeholder="Add your Bio"
+          value={userBio}
+          onChangeText={text => setUserBio(text)}
+        />
       </View>
       {/* Field To edit Location */}
 

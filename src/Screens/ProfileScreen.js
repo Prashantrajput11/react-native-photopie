@@ -1,12 +1,47 @@
 import {StyleSheet, Text, View, Image, Pressable} from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {LIGHT, THEME_COLOR2, THEME_COLOR2_SHADE_1} from '../utils/Colors';
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
+
+// Third Party Component/ Libraries Imports
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+// Firebase imports
+import storage from '@react-native-firebase/storage';
+import firestore from '@react-native-firebase/firestore';
 
 const ProfileScreen = () => {
   // import useNavigation Hook
 
   const navigation = useNavigation();
+
+  const [userBio, setUserBio] = useState('');
+  const [updatedProfileImage, setUpdatedProfileImage] = useState('');
+  const isFocused = useIsFocused();
+
+  // Functions related to this screen  -Start//
+
+  useEffect(() => {
+    getUserUpdatedInfo();
+  }, [isFocused]);
+  const getUserUpdatedInfo = async () => {
+    try {
+      const USER_ID = await AsyncStorage.getItem('USER_ID');
+
+      const updatedInfo = await firestore()
+        .collection('Users')
+        .doc(USER_ID)
+        .get();
+
+      setUserBio(updatedInfo.data().userBio);
+      setUpdatedProfileImage(updatedInfo.data().userImage);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  getUserUpdatedInfo();
+  // Functions related to this screen  -End//
 
   return (
     <View
@@ -21,11 +56,19 @@ const ProfileScreen = () => {
         paddingVertical: 32,
       }}>
       <View>
-        <Image
-          source={require('../assets//twitter_profile_picture.jpeg')}
-          style={{height: 80, width: 80, borderRadius: 40}}
-        />
-        <Text>React native Dev</Text>
+        {updatedProfileImage == '' ? (
+          <Image
+            source={require('../assets/user.png')}
+            style={{height: 80, width: 80, borderRadius: 40}}
+          />
+        ) : (
+          <Image
+            source={{uri: updatedProfileImage}}
+            style={{height: 80, width: 80, borderRadius: 40}}
+          />
+        )}
+
+        <Text>{userBio}</Text>
         <Text>Gurgaon, India</Text>
       </View>
 
@@ -36,7 +79,12 @@ const ProfileScreen = () => {
           paddingVertical: 6,
           borderRadius: 6,
         }}
-        onPress={() => navigation.navigate('EditProfileScreen')}>
+        onPress={() =>
+          navigation.navigate('EditProfileScreen', {
+            imageData: updatedProfileImage,
+            updatedBio: userBio,
+          })
+        }>
         <Text style={{color: LIGHT}}>Edit Profile</Text>
       </Pressable>
     </View>
