@@ -7,6 +7,7 @@ import {
   TextInput,
   Pressable,
   PermissionsAndroid,
+  ScrollView,
 } from 'react-native';
 
 // React Imports
@@ -16,7 +17,14 @@ import React, {useRef, useState, useEffect} from 'react';
 import Loader from '../components/Loader';
 
 // Utils Imports
-import {DARK, GRAY, LIGHT, THEME_COLOR2} from '../utils/Colors';
+import {
+  DARK,
+  GRAY,
+  LIGHT,
+  THEME_COLOR2,
+  THEME_COLOR2_SHADE_1,
+} from '../utils/Colors';
+import {citiesList} from '../utils/Constants';
 
 //  Hooks Imports
 import {useNavigation} from '@react-navigation/native';
@@ -29,6 +37,7 @@ import RBSheet from 'react-native-raw-bottom-sheet';
 // Firebase imports
 import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
+import CustomDropdown from '../components/CustomDropdown';
 
 const EditProfileScreen = ({route}) => {
   // Access the imageData from route.params
@@ -44,6 +53,16 @@ const EditProfileScreen = ({route}) => {
   const [imageData, setImageData] = useState({assets: [{uri: ''}]});
   const [showLoader, setShowLoader] = useState(false);
   const [userBio, setUserBio] = useState('');
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [selectedCity, setSelectedCity] = useState('');
+
+  useEffect(() => {
+    setUserBio(userBioFinal);
+  }, [userBioFinal]);
+
+  useEffect(() => {
+    setShowDropdown(false);
+  }, [selectedCity]);
 
   //---------------------------------------------------//
 
@@ -122,11 +141,12 @@ const EditProfileScreen = ({route}) => {
           userImage: url,
           userBio: userBio,
         });
-        // } else {
-        //   const USER_ID = await AsyncStorage.getItem('USER_ID');
-        //   await firestore().collection('Users').doc(USER_ID).update({
-        //     userBio: userBio,
-        //   });
+      } else {
+        const USER_ID = await AsyncStorage.getItem('USER_ID');
+        await firestore().collection('Users').doc(USER_ID).update({
+          userBio: userBio,
+          userLocation: selectedCity,
+        });
       }
 
       setShowLoader(false);
@@ -136,11 +156,6 @@ const EditProfileScreen = ({route}) => {
       console.log('Error while updating', error);
     }
   };
-
-  // Functions related to this screen  -End//
-  useEffect(() => {
-    setUserBio(userBioFinal);
-  }, [userBioFinal]);
 
   return (
     <View>
@@ -214,8 +229,38 @@ const EditProfileScreen = ({route}) => {
 
       <View style={styles.editFieldsContainer}>
         <Text style={styles.editFieldLabel}>Location</Text>
-        <TextInput placeholder="Add your Location" />
+        <TextInput placeholder="Add your Location" value={selectedCity} />
+        <Pressable onPress={() => setShowDropdown(!showDropdown)}>
+          <Image
+            source={require('../assets/down-arrow.png')}
+            style={{height: 20, width: 20}}
+          />
+        </Pressable>
       </View>
+
+      {/* list of cities */}
+
+      {showDropdown && (
+        <ScrollView style={{backgroundColor: '#fff', height: 300}}>
+          {citiesList.map(city => {
+            return (
+              <View key={city.id}>
+                <Pressable
+                  style={{
+                    borderTopColor: GRAY,
+                    borderTopWidth: 1,
+                    // marginVertical: 12,
+                    paddingVertical: 12,
+                    backgroundColor: THEME_COLOR2_SHADE_1,
+                  }}
+                  onPress={() => setSelectedCity(city.cityName)}>
+                  <Text>{city.cityName}</Text>
+                </Pressable>
+              </View>
+            );
+          })}
+        </ScrollView>
+      )}
 
       <RBSheet ref={refRBSheet} closeOnDragDown={true} closeOnPressMask={true}>
         <View>

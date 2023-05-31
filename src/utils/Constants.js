@@ -21,3 +21,16 @@ export const UPLOAD_OPTIONS = [
   },
   // Add more items here...
 ];
+
+export const citiesList = [
+  {id: '01', cityName: 'Delhi'},
+  {id: '02', cityName: 'Gurugram'},
+  {id: '03', cityName: 'Mumbai'},
+  {id: '04', cityName: 'Kolkata'},
+  {id: '05', cityName: 'Jaipur'},
+  {id: '06', cityName: 'Pune'},
+  {id: '07', cityName: 'Lucknow'},
+  {id: '08', cityName: 'Dehradoon'},
+  {id: '09', cityName: 'Banglore'},
+  {id: '10', cityName: 'Ajmer'},
+];

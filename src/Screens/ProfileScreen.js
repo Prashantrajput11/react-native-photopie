@@ -17,6 +17,7 @@ const ProfileScreen = () => {
 
   const [userBio, setUserBio] = useState('');
   const [updatedProfileImage, setUpdatedProfileImage] = useState('');
+  const [updatedUserLocation, setUpdatedUserLocation] = useState('');
   const isFocused = useIsFocused();
 
   // Functions related to this screen  -Start//
@@ -35,6 +36,7 @@ const ProfileScreen = () => {
 
       setUserBio(updatedInfo.data().userBio);
       setUpdatedProfileImage(updatedInfo.data().userImage);
+      setUpdatedUserLocation(updatedInfo.data().userLocation);
     } catch (error) {
       console.log(error);
     }
@@ -69,7 +71,7 @@ const ProfileScreen = () => {
         )}
 
         <Text>{userBio}</Text>
-        <Text>Gurgaon, India</Text>
+        <Text>{updatedUserLocation}</Text>
       </View>
 
       <Pressable
