@@ -15,7 +15,7 @@ const BottomSheet = React.forwardRef((props, ref) => {
         closeOnPressMask={true}
         customStyles={{
           container: {
-            backgroundColor: THEME_COLOR2_SHADE_1,
+            // backgroundColor: THEME_COLOR2_SHADE_1,
             paddingHorizontal: 16,
             paddingVertical: 12,
             // borderTopRadius: 16,

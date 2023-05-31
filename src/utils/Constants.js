@@ -181,3 +181,31 @@ export const companies = [
     companyName: 'Salesforce',
   },
 ];
+
+export const workplaceTypes = [
+  {
+    id: '1',
+    type: 'On-site',
+    description: 'Work at the company office',
+  },
+  {
+    id: '2',
+    type: 'Hybrid',
+    description: 'Blend of remote and on-site work',
+  },
+  {
+    id: '3',
+    type: 'Remote',
+    description: 'Work off-site',
+  },
+];
+
+export const jobTypes = [
+  {id: '1', type: 'Full-time'},
+  {id: '2', type: 'Part-time'},
+  {id: '3', type: 'Contract'},
+  {id: '4', type: 'Freelance'},
+  {id: '5', type: 'Temporary'},
+  {id: '6', type: 'Internship'},
+  {id: '7', type: 'Volunteer'},
+];
