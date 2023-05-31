@@ -11,6 +11,7 @@ import Upload from '../bottomTabs/Upload';
 import Home from '../bottomTabs/Home';
 import ProfileScreen from '../Screens/ProfileScreen';
 import EditProfileScreen from '../Screens/EditProfileScreen';
+import CreateJob from '../bottomTabs/CreateJob';
 
 const Stack = createNativeStackNavigator();
 const AppNavigator = () => {
@@ -39,6 +40,10 @@ const AppNavigator = () => {
         <Stack.Screen
           name={'EditProfileScreen'}
           component={EditProfileScreen}
+          options={{headerShown: false}}></Stack.Screen>
+        <Stack.Screen
+          name={'CreateJob'}
+          component={CreateJob}
           options={{headerShown: false}}></Stack.Screen>
         <Stack.Screen
           name={'SignupScreen'}
