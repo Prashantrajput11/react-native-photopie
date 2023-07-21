@@ -24,6 +24,8 @@ const SignupScreen = () => {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
+  const [followers, setFollowers] = useState([]);
+  const [following, setFollowing] = useState([]);
   const [hasStartedTyping, setHasStartedTyping] = useState(false);
   const [showLoader, setShowLoader] = useState(false);
 
@@ -79,6 +81,8 @@ const SignupScreen = () => {
         password: password,
         phone: phone,
         userId: userId,
+        userFollowers: followers,
+        userFollowing: following,
       });
       // If user created successsfully, hide the loader
       setShowLoader(true);
@@ -176,7 +180,7 @@ const SignupScreen = () => {
             borderRadius: 6,
           }}
           onPress={() => {
-            if (validateUserLogin()) {
+            if (validateData()) {
               handleSignup();
             }
           }}>
